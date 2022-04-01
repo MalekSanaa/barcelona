@@ -1,0 +1,79 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
+#lire les données
+deaths = pd.read_csv("deaths.csv")
+accidents_2017 = pd.read_csv("accidents_2017.csv")
+air_quality_Nov2017 = pd.read_csv("air_quality_Nov2017.csv")
+air_stations_Nov2017 = pd.read_csv("air_stations_Nov2017.csv")
+births = pd.read_csv("births.csv")
+bus_stops = pd.read_csv("bus_stops.csv")
+immigrants_by_nationality = pd.read_csv("immigrants_by_nationality.csv")
+immigrants_emigrants_by_age = pd.read_csv("immigrants_emigrants_by_age.csv")
+immigrants_emigrants_by_destination = pd.read_csv("immigrants_emigrants_by_destination.csv")
+immigrants_emigrants_by_destination2 = pd.read_csv("immigrants_emigrants_by_destination2.csv")
+immigrants_emigrants_by_sex = pd.read_csv("immigrants_emigrants_by_sex.csv")
+life_expectancy = pd.read_csv("life_expectancy.csv")
+most_frequent_baby_names = pd.read_csv("most_frequent_baby_names.csv")
+most_frequent_names = pd.read_csv("most_frequent_names.csv")
+population = pd.read_csv("population.csv")
+transports = pd.read_csv("transports.csv")
+unemployment = pd.read_csv("unemployment.csv")
+
+
+
+#choisir quel dataframe sera traité
+
+## prenons population
+data = population[['Year','Neighborhood.Name','Gender','Number']].groupby(['Year','Neighborhood.Name','Gender']).sum().reset_index()
+## Ici on convertit la colonne 'year'  en string pour qu'on puisse le comparer à l'input de l'utilisateur.
+data = data.astype({'Year': 'str'})
+
+data.dtypes
+
+## resumé des statistiques descriptives des colonnes
+data.describe(include ='all')
+
+#nous voyons que l'information est affichée pour chaque quartier de 2013 a 2017
+#regardons les données
+display(data)
+
+
+#afin de faciliter l'analyse nous filtrerons les données pour garder seulement une année 
+msg = 'choisir une année entre 2013 et 2017\n'
+annee = input(msg)
+
+#analysons maitenant le df en conservant seulement les données de l'année choisie:
+
+data[data['Year'] == annee]
+
+# nous remarquons maitenant que les données semblent sous-divisées par groupe d'age et sexe
+# choisons un seul quartier pour analyser avec un peu plus de détail
+
+
+#mais quels sont les quartiers de Barcelone? demandons a python d'afficher les valeurs uniques des noms de quartiers
+colonne = 'Neighborhood.Name'
+V_unique = population[[colonne,'Number']].groupby([colonne]).sum().reset_index()
+V_unique = V_unique.drop(columns=['Number'])
+print('Vous avez {0} quartiers'.format(V_unique.size))
+display(V_unique.T)
+
+# Demandons a l'utilisateur de choisir le quartier
+quartiers = V_unique.to_dict()
+msg = "choisir l'index  d'un quartier\n"
+choix = int(input(msg))
+quartier_choisi = quartiers['Neighborhood.Name'][choix]
+print('Vous avez choisi : {0} -{1}'.format(choix,quartier_choisi))
+
+#donnée trier selon le quartier choisi.
+data[(data['Neighborhood.Name'] == quartier_choisi) ]
+# Données trier selon le quartier et l'annee choisis
+data[(data['Neighborhood.Name'] == quartier_choisi)&(data['Year']== annee) ]
+
+
+#Unemployement regroupé par : quartier, année et sexe.
+chomage = unemployment[['Year','Neighborhood Name','Gender','Number']].groupby(['Year','Neighborhood Name','Gender']).sum()
+chomage
+
+
