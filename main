@@ -116,4 +116,16 @@ data_nb_populationlast10= data_nb_population.sort_values(by=["Number"], ascendin
 data_nb_populationlast10 
 
 
+# Tableau affichant l'unemployment par quartiers et par année
+chomage = unemployment[['Year','Neighborhood Name','Gender','Number']].groupby(['Year','Neighborhood Name','Gender']).sum()
+chomage
+
+
+# Tableau affichant life_expectancy par quartiers et par sexe pour la periode '2010-2014'
+
+life_expectancy[['Neighborhood','Gender','2010-2014']].groupby(['Neighborhood','Gender']).sum()
+
+
+
+
 
