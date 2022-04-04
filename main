@@ -116,4 +116,51 @@ data_nb_populationlast10= data_nb_population.sort_values(by=["Number"], ascendin
 data_nb_populationlast10 
 
 
+------------------------- life_expectancy-------------------------------------------
 
+
+#On souhaite afficher les 10 quartiers qui ont la meilleure 'life_expectancy' pour le sexe et la période choisis par l'utilisateur.
+print(life_expectancy.Gender.unique())
+msg = "choisisez le sexe voulu : \n"
+choix_s = input(msg)
+
+# afin d'éviter des résultats vides, on vérifie l'input de l'utilisateur avant de continuer.
+
+redemander = 'oui'
+while ( redemander == 'oui'):
+    if (choix_s == 'Male') or (choix_s == 'Female'):
+        print('le sexe choisi est : {0}'.format(choix_s))
+        redemander = 'non'
+        break
+    else : 
+        print("Choix inconnu, choissisez entre 'Male' et 'Female' ")
+        choix_s = input(msg)
+# Afin d'afficher les périodes pour lesquelles les données sont disponibles,
+#on stocke les noms des colonnes de la dataframe 'life_expectancy' dans une liste et on garde juste les périodes.
+Periode = list(life_expectancy.columns)
+del(Periode[0])
+del(Periode[-1])
+print(Periode)
+#choissisez l'index de la periode voulu
+msg_p = "choisisez l'index de la periode voulu : 1,2,3,4  \n"
+choix_p = input(msg_p)
+# puisque les index des listes commencent par 0 et non pas par 1, on change le type de l'input à 'integer' et on diminue le choix de l'utilisateur de '1' . 
+choix_p = int(choix_p) -1 
+print('la periode choisi est : {0}'.format(Periode[choix_p]))
+
+life_ex = life_expectancy[['Neighborhood','Gender',Periode[choix_p]]]
+life_ex = life_ex[(life_ex['Gender'] == choix_s)]
+life_ex = life_ex.sort_values(by = Periode[choix_p], ascending = False) 
+life_ex
+
+# On remarque qu'il y a des valeurs null qui ont été lues comme 'NaN', 
+# donc on souhaite remplacer les 'NaN' dans le resultat par 'No data'.
+life_ex[Periode[choix_p]] = life_ex[Periode[choix_p]].fillna("No Data")
+life_ex
+
+# Ici on affiche les 5 quartiers qui ont la meilleure 'life_expectancy' selon les criteres choisi : 
+life_e = life_ex.head(5)
+
+#affichage
+seaborn.catplot(x="Neighborhood", y=Periode[choix_p], kind="bar", data=life_e, aspect=2). \
+set(xlabel='Neighborhood', ylabel='life_expectancy', title='life_expectancy selon le quartier')
